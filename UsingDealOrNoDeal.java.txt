@@ -1,0 +1,14 @@
+import javax.swing.*;
+import java.awt.*;
+public class UsingDealOrNoDeal
+{
+    public static void main(String [] args)
+    {
+        JFrame frame = new JFrame();
+        frame.setTitle("Deal or No Deal");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1200,1000);
+        frame.add(new DealOrNoDeal());
+        frame.setVisible(true);
+    }
+}

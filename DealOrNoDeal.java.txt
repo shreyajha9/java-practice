@@ -1,0 +1,161 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+public class DealOrNoDeal extends JPanel
+{
+    private JButton[] caseButtons = new JButton[10];
+    private JButton dealButton;
+    private JLabel messageLabel;//Display Messages
+    private double[] values = new double[10];
+    private int chosenCase =-1;
+    private boolean[] caseOpened = new boolean[10];//Track Opened cases
+    private boolean gameOver = false;
+    private int casesOpened = 0;
+    public DealOrNoDeal()
+    {
+        //Set Layout
+        setLayout(new GridLayout(4,3,10,10));
+        setBackground(new Color(30,30,30));
+        Font caseFont = new Font("Arial", Font.BOLD, 16);
+        //Create and add case buttons
+        for(int i = 0; i < 10; i++)
+        {
+            caseButtons[i] = new JButton("Case" + (i+1));
+            caseButtons[i].setActionCommand("" + i);
+            caseButtons[i].addActionListener(new ButtonHandler());
+            add(caseButtons[i]);
+        }
+        //Create and add Deal button
+        dealButton = new JButton("Take the Deal");
+        dealButton.setActionCommand("Deal");
+        dealButton.addActionListener(new ButtonHandler());
+        dealButton.setBackground(new Color(220,20,60));
+        dealButton.setForeground(Color.BLACK);
+        dealButton.setFont(new Font("Verdana",Font.BOLD,16));
+        add(dealButton);
+        
+        messageLabel = new JLabel("Pick a case to keep!");
+        messageLabel.setForeground(Color.YELLOW);
+        messageLabel.setFont(new Font("SansSerif",Font.BOLD,18));
+        add(messageLabel);
+        generateCaseValues();
+    }
+    //Randomly assign valaues to each case without duplicates
+    private void generateCaseValues()
+    {
+       double[] possibleValues = {1.00, 5.00, 10.00, 25.00, 50.00, 100.00, 200.00, 300.00, 500.00, 1000.00};
+       //Shuffle possibleValues 
+       for(int i = 0; i < possibleValues.length; i++)
+       {
+           int index = (int)(Math.random()*possibleValues.length);
+           double temp = possibleValues[i];
+           possibleValues[i] = possibleValues[index];
+           possibleValues[index] = temp;
+       }
+       for(int i = 0; i < 10; i++)
+       {
+           values[i] = possibleValues[i];
+       }
+    }
+    private class ButtonHandler implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            String command = e.getActionCommand();
+            if(gameOver)//control statement: stop interaction after game over 
+            {
+                messageLabel.setText("Game over. Restart to play again.");
+                return;
+            }
+            if(command.equals("Deal"))
+            {
+                double offer = calculateBankOffer();
+                messageLabel.setText("You took the deal: $" + offer);
+                gameOver = true;
+                return;
+            }
+            //Now we know it's a case number (0-9)
+            int index = 0;
+            if(command.equals("0"))
+            {
+                index = 0;
+            }
+            if(command.equals("1"))
+            {
+                index = 1;
+            }
+            if(command.equals("2"))
+            {
+                index = 2;
+            }
+            if(command.equals("3"))
+            {
+                index = 3;
+            }
+            if(command.equals("4"))
+            {
+                index = 4;
+            }
+            if(command.equals("5"))
+            {
+                index = 5;
+            }
+            if(command.equals("6"))
+            {
+                index = 6;
+            }
+            if(command.equals("7"))
+            {
+                index = 7;
+            }
+            if(command.equals("8"))
+            {
+                index = 8;
+            }
+            if(command.equals("9"))
+            {
+                index = 9;
+            }
+            if(chosenCase == -1)
+            {
+                chosenCase = index;
+                caseButtons[index].setText("Your Case");
+                caseButtons[index].setBackground(Color.GREEN);
+                messageLabel.setText("Now open other cases.");
+            }
+            else if(!caseOpened[index] && index != chosenCase)
+            {
+                caseOpened[index] = true;
+                caseButtons[index].setText("Opened $" + values[index]);
+                caseButtons[index].setBackground(Color.DARK_GRAY);
+                messageLabel.setText("You opened Case " + (index + 1) + " with $" + values[index]);
+                casesOpened++;
+            }
+            if(casesOpened == 8)
+            {
+                gameOver = true;
+                double finalValue = values[chosenCase];
+                messageLabel.setText("Game over. Your case had $" + finalValue);
+            }
+        }
+    }
+    public double calculateBankOffer()
+    {
+        double total = 0;
+        int count = 0;
+        for(int i = 0; i < values.length; i++)
+        {
+            if(!caseOpened[i] && i != chosenCase)
+            {
+                total += values[i];
+                count++;
+            }
+        }
+        if(count == 0)
+        {
+            return 0;
+        }
+        return Math.round(total/count*100.0)/100.0;
+    }
+}

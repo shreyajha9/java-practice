@@ -1,0 +1,89 @@
+import java.util.Scanner;
+
+public class TicTacToe {
+    public static void main(String[] args) {
+        // Initialize board with 9 cells (0 means empty, 1 means X, 2 means O)
+        int cell1 = 0, cell2 = 0, cell3 = 0;
+        int cell4 = 0, cell5 = 0, cell6 = 0;
+        int cell7 = 0, cell8 = 0, cell9 = 0;
+
+        int player = 1; // Player 1 starts the game
+        int moves = 0;  // To count moves
+        boolean gameWon = false;
+        Scanner reader = new Scanner(System.in);
+
+        // Main game loop
+        while (!gameWon && moves < 9) {
+            // Display the board
+            displayBoard(cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9);
+
+            // Get player's move
+            System.out.println("Player " + player + "'s turn. Enter cell number (1-9): ");
+            int cell = reader.nextInt();
+
+            // Update the correct cell if it's empty
+            if (cell == 1 && cell1 == 0) cell1 = player;
+            else if (cell == 2 && cell2 == 0) cell2 = player;
+            else if (cell == 3 && cell3 == 0) cell3 = player;
+            else if (cell == 4 && cell4 == 0) cell4 = player;
+            else if (cell == 5 && cell5 == 0) cell5 = player;
+            else if (cell == 6 && cell6 == 0) cell6 = player;
+            else if (cell == 7 && cell7 == 0) cell7 = player;
+            else if (cell == 8 && cell8 == 0) cell8 = player;
+            else if (cell == 9 && cell9 == 0) cell9 = player;
+            else {
+                System.out.println("Invalid move! Cell is already occupied or does not exist.");
+                continue;
+            }
+
+            moves++; // Increment move count
+
+            // Check for win conditions
+            gameWon = checkWin(cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, player);
+
+            // Switch players
+            player = (player % 2) + 1; // Switch between 1 and 2
+        }
+
+        // Display the final board
+        displayBoard(cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9);
+
+        // Announce the result
+        if (gameWon) {
+            System.out.println("Player " + ((player % 2) + 1) + " wins!");
+        } else {
+            System.out.println("It's a draw!");
+        }
+
+        reader.close();
+    }
+
+    // Method to check for win conditions
+    public static boolean checkWin(int c1, int c2, int c3, int c4, int c5, int c6, int c7, int c8, int c9, int player) {
+        // Check rows, columns, and diagonals for a win
+        return (c1 == player && c2 == player && c3 == player) || // Row 1
+               (c4 == player && c5 == player && c6 == player) || // Row 2
+               (c7 == player && c8 == player && c9 == player) || // Row 3
+               (c1 == player && c4 == player && c7 == player) || // Column 1
+               (c2 == player && c5 == player && c8 == player) || // Column 2
+               (c3 == player && c6 == player && c9 == player) || // Column 3
+               (c1 == player && c5 == player && c9 == player) || // Diagonal
+               (c3 == player && c5 == player && c7 == player);   // Diagonal
+    }
+
+    // Method to display the Tic Tac Toe board
+    public static void displayBoard(int c1, int c2, int c3, int c4, int c5, int c6, int c7, int c8, int c9) {
+        System.out.println(convertCell(c1) + " | " + convertCell(c2) + " | " + convertCell(c3));
+        System.out.println("---------");
+        System.out.println(convertCell(c4) + " | " + convertCell(c5) + " | " + convertCell(c6));
+        System.out.println("---------");
+        System.out.println(convertCell(c7) + " | " + convertCell(c8) + " | " + convertCell(c9));
+    }
+
+    // Method to convert cell values to display characters
+    public static String convertCell(int cell) {
+        if (cell == 1) return "X";
+        else if (cell == 2) return "O";
+        else return " ";
+    }
+}
